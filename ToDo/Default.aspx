@@ -16,7 +16,7 @@
                     <ItemTemplate>
                         <li>
                             <div class="view">
-                                <asp:CheckBox  ID="chk" runat="server" AutoPostBack="true" OnCheckedChanged="IsCompleted_CheckedChanged"></asp:CheckBox>
+                                <asp:CheckBox  ID="chk" runat="server" AutoPostBack="true" CssClass="toggle" OnCheckedChanged="IsCompleted_CheckedChanged"></asp:CheckBox>
                                 <label><%#Eval("Title")%></label>
                                 <button class="destroy"></button>
                             </div>
