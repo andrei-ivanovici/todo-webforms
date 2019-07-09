@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="ToDo._Default" %>
+﻿<%@ Page EnableEventValidation="false" Title="Home Page" Language="C#" MasterPageFile="~/Site.Master" Async="true"  AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="ToDo._Default" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <section class="todoapp">
@@ -11,7 +11,7 @@
                 </asp:TextBox>
             </form>
         </header>
-        <% if (todoStore.Count > 0)
+        <% if (isEmpty)
            { %>
         <section class="main">
             <ul class="todo-list">
@@ -24,11 +24,11 @@
                                               Text="  "
                                               Checked='<%#Eval("IsCompleted") %>'
                                               OnCheckedChanged="IsCompleted_CheckedChanged"
-                                              itemId='<%#Eval("Title") %>'>
+                                              itemId='<%#Eval("Id") %>'>
                                 </asp:CheckBox>
                                 <label><%#Eval("Title") %></label>
                                 <%-- <button class="destroy" runat="server" OnClick="Remove_Item"></button> --%>
-                                 <asp:Button CssClass="destroy" runat="server"  OnClick="Remove_Item" itemId='<%#Eval("Title") %>' />
+                                 <asp:Button CssClass="destroy" runat="server"  OnClick="Remove_Item" itemId='<%#Eval("Id") %>' />
                             </div>
                         </li>
                     </ItemTemplate>
@@ -37,7 +37,7 @@
             </ul>
             <footer class="footer">
                 <span class="todo-count">
-                    <strong><%= todoStore.Count %></strong> items left
+                    <strong><%= TodoCount %></strong> items left
                 </span>
                 <asp:Button CssClass="clear-completed" runat="server" OnClick="Clear_Completed" Text="Clear Completed"></asp:Button>
             </footer>

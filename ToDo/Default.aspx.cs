@@ -1,75 +1,70 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Business;
 
 namespace ToDo
 {
-    public class Todo
-    {
-        public string Id { get; set; }
-        public string Title { get; set; }
-        public bool IsCompleted { get; set; }
-
-        public Todo()
-        {
-            Id = Guid.NewGuid().ToString();
-        }
-    }
-
     public partial class _Default : Page
     {
-        public static List<Todo> todoStore = new List<Todo>
-        {
-//            new Todo {Title = "Walk the dog"},
-//            new Todo {Title = "Mail the document"}
-        };
+        private ToDoService _todoService;
 
-        protected override void OnInit(EventArgs e)
+        public bool isEmpty;
+        public int TodoCount;
+
+        public _Default()
         {
-//            Page.EnableEventValidation = false;
-            todoList.DataSource = todoStore;
+            _todoService = new ToDoService();
+        }
+
+        protected override async void OnInit(EventArgs e)
+        { 
+            await RefreshItems();
+        }
+
+        private  async Task RefreshItems()
+        {
+            var todos = (await _todoService.GetToDos()).ToList();
+            isEmpty = todos.Any();
+            TodoCount = todos.Count;
+            todoList.DataSource = todos;
             todoList.DataBind();
         }
 
-        protected void Page_Load(object sender, EventArgs e)
+        protected async void Page_Load(object sender, EventArgs e)
         {
             if (IsPostBack && !string.IsNullOrEmpty(taskName.Text))
             {
-                todoStore.Add(new Todo {Title = taskName.Text});
+                await _todoService.AddItem(new Business.ToDo {Title = taskName.Text});
                 taskName.Text = "";
-                todoList.DataBind();
+
+                await RefreshItems();
             }
         }
 
-        protected void IsCompleted_CheckedChanged(object sender, EventArgs e)
+        protected async void IsCompleted_CheckedChanged(object sender, EventArgs e)
         {
             var checkbox = (CheckBox) sender;
             var itemId = checkbox.Attributes["itemID"];
-            var foundValue = todoStore.First(t => t.Title == itemId);
-            if (foundValue != null)
-            {
-                foundValue.IsCompleted = checkbox.Checked;
-            }
+            await _todoService.MarkAsCompleted(itemId, checkbox.Checked);
 
-            todoList.DataBind();
+            await RefreshItems();
         }
 
-        protected void Remove_Item(object sender, EventArgs e)
+        protected async void Remove_Item(object sender, EventArgs e)
         {
             var checkbox = (Button) sender;
             var itemId = checkbox.Attributes["itemID"];
-            var foundValue = todoStore.First(t => t.Title == itemId);
-            todoStore.Remove(foundValue);
-            todoList.DataBind();
+            await _todoService.RemoveItem(itemId);
+            await RefreshItems();
         }
 
-        protected void Clear_Completed(object sender, EventArgs e)
+        protected async void Clear_Completed(object sender, EventArgs e)
         {
-            todoStore = todoStore.Where(todo => !todo.IsCompleted).ToList();
-            todoList.DataSource = todoStore;
-            todoList.DataBind();
+            await _todoService.ClearCompleted();
+            await RefreshItems();
         }
     }
 }
