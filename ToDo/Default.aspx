@@ -11,7 +11,7 @@
                 </asp:TextBox>
             </form>
         </header>
-        <% if (todos.Count > 0)
+        <% if (todoStore.Count > 0)
            { %>
         <section class="main">
             <ul class="todo-list">
@@ -22,24 +22,26 @@
                                 <asp:CheckBox ID="chk" runat="server" AutoPostBack="true"
                                               CssClass="toggle"
                                               Text="  "
-                                              Checked='<%#Eval("IsCompleted")%>'
+                                              Checked='<%#Eval("IsCompleted") %>'
                                               OnCheckedChanged="IsCompleted_CheckedChanged"
                                               itemId='<%#Eval("Title") %>'>
                                 </asp:CheckBox>
                                 <label><%#Eval("Title") %></label>
-                                <button class="destroy"></button>
+                                <%-- <button class="destroy" runat="server" OnClick="Remove_Item"></button> --%>
+                                 <asp:Button CssClass="destroy" runat="server"  OnClick="Remove_Item" itemId='<%#Eval("Title") %>' />
                             </div>
                         </li>
                     </ItemTemplate>
                 </asp:Repeater>
-                <% } %>
+
             </ul>
             <footer class="footer">
                 <span class="todo-count">
-                    <strong><%= todos.Count %></strong> items left
+                    <strong><%= todoStore.Count %></strong> items left
                 </span>
-                <button class="clear-completed">Clear completed</button>
+                <asp:Button CssClass="clear-completed" runat="server" OnClick="Clear_Completed" Text="Clear Completed"></asp:Button>
             </footer>
+            <% } %>
         </section>
         </section>
 </asp:Content>
