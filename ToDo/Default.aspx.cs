@@ -6,32 +6,31 @@ using System.Web.UI.WebControls;
 
 namespace ToDo
 {
-
     public class Todo
     {
         public string Title { get; set; }
-        public bool idDone { get; set; }
+        public bool IsCompleted { get; set; }
     }
+
     public partial class _Default : Page
     {
-
-        public static List<Todo> todos = new List<Todo> {
-            new Todo { Title = "Walk the dog" },
-            new Todo { Title = "Mail the document"}
+        public static List<Todo> todos = new List<Todo>
+        {
+            new Todo {Title = "Walk the dog"},
+            new Todo {Title = "Mail the document"}
         };
-        public ObjectDataSource dataSource;
-
+     
         protected override void OnInit(EventArgs e)
         {
             todoList.DataSource = todos;
             todoList.DataBind();
         }
+
         protected void Page_Load(object sender, EventArgs e)
         {
-
             if (IsPostBack && !string.IsNullOrEmpty(taskName.Text))
             {
-                todos.Add(new Todo { Title = taskName.Text });
+                todos.Add(new Todo {Title = taskName.Text});
                 taskName.Text = "";
                 todoList.DataBind();
             }
@@ -39,17 +38,15 @@ namespace ToDo
 
         protected void IsCompleted_CheckedChanged(object sender, EventArgs e)
         {
-            todoList.DataBind();
-            var checkbox = (CheckBox)sender;
-            var item = checkbox.Parent as RepeaterItem;
 
-            var currentTodo = item.DataItem as Todo;
-            var foundValue = todos.First(t => t.Title == currentTodo.Title);
+            var checkbox = (CheckBox) sender;
+            var itemId = checkbox.Attributes["itemID"];
+            var foundValue = todos.First(t => t.Title == itemId);
             if (foundValue != null)
             {
-                foundValue.idDone = checkbox.Checked;
+                foundValue.IsCompleted = checkbox.Checked;
             }
-
+            todoList.DataBind();
         }
     }
 }
