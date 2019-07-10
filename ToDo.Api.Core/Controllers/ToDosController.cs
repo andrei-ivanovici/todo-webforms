@@ -28,9 +28,10 @@ namespace ToDo.Api.Core.Controllers
 
         // POST api/values
         [HttpPost]
-        public Task Post([FromBody] Business.ToDo value)
+        public async Task<IActionResult> Post([FromBody] Business.ToDo value)
         {
-            return _toDosService.AddItem(value);
+            await _toDosService.AddItem(value);
+            return Ok(value);
         }
 
         // PUT api/values/5
