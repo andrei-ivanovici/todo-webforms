@@ -1,6 +1,8 @@
 import React, { Fragment } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
+
 import {
   TagEditField, TagList, TagTopNavbar,
   TagButton, IListButtonClickArgs,
@@ -17,68 +19,79 @@ interface Todo {
   title: string,
   isCompleted: boolean,
 }
-
+const BaseUrl = "https://localhost:5001/todos";
 class App extends React.Component<any, AppState> {
 
   constructor(props: any) {
     super(props);
     this.state = {
       todo: '',
-      todos: this._todos
+      todos: []
     }
   }
 
-  private _todos: Todo[] = [
-    { id: "1", title: 'Walk the dog', isCompleted: true },
-    { id: "2", title: 'Mail the document', isCompleted: true },
-  ];
+  componentDidMount() {
+    axios.get(BaseUrl)
+      .then(res => {
+        const todos = res.data;
+        this.setState({ todos });
+      })
+  }
 
   deleteTodo = (e: CustomEvent<IListButtonClickArgs>) => {
     console.log(e.detail.item);
     //TODO: call api
-    this.setState({
-      todos: [...this.state.todos.filter(t => t.id != e.detail.item.id)]
-    })
+    axios.delete(`${BaseUrl}/${e.detail.item.id}`)
+      .then(res => {
+        this.setState({
+          todos: [...this.state.todos.filter(t => t.id != e.detail.item.id)]
+        })
+      })
   }
 
   todoStateChanged = (e: CustomEvent<IListItemsCheckedArgs>) => {
     //Only one item can change, the select all option is disabled
     let changedItem = e.detail.changes[0];
     console.log(changedItem);
-    //TODO: call api
-    let oldItem = this.state.todos.find(t => t.id === changedItem.item.id);
-    if (oldItem !== undefined) {
-      oldItem.isCompleted = changedItem.checked;
-      this.setState({
-        todos: [...this.state.todos]
+
+    axios.patch(`${BaseUrl}/${changedItem.item.id}`, { isCompleted: changedItem.checked })
+      .then(_ => {
+        let oldItem = this.state.todos.find(t => t.id === changedItem.item.id);
+        if (oldItem !== undefined) {
+          oldItem.isCompleted = changedItem.checked;
+          this.setState({
+            todos: [...this.state.todos]
+          })
+        }
       })
-    }
   }
 
   addNewTodoItem = (e: any) => {
     if (e.key === 'Enter') {
       console.log(e.target.value);
       let todoTitle = e.target.value;
-      //TODO: call api
-      setTimeout(() => {
-        this.setState({
-          todo: '',
-          todos: [...this.state.todos, {
-            id: Date.now().toString(),
-            title: todoTitle,
-            isCompleted: false
-          }]
+      let todoRequestBody = { title: todoTitle, isCompleted: false }
+
+      axios.post(BaseUrl, todoRequestBody)
+        .then(res => {
+          const receivedTodo = res.data;
+          this.setState({
+            todo: '',
+            todos: [...this.state.todos, receivedTodo]
+          })
         })
-      }, 0);
     }
   }
 
   clearCompleted = () => {
-    console.log("Clear completed")
-    //TODO: call api
-    this.setState({
-      todos: [...this.state.todos.filter(t => !t.isCompleted)]
-    })
+    console.log("Clear completed");
+
+    axios.delete(`${BaseUrl}/completed`)
+      .then(res => {
+        this.setState({
+          todos: [...this.state.todos.filter(t => !t.isCompleted)]
+        })
+      })
   }
 
   public render = () => {
