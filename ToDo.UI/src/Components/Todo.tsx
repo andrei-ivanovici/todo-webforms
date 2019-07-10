@@ -98,8 +98,6 @@ export class TodoComponent extends React.Component<TodoComponentProps, TodoCompo
                     checkedItems={[...this.state.todos.filter(t => t.isCompleted)]}
                     data={this.state.todos}
                     multi-check
-                    item-container-style-field='is'
-                    primary-field-style-field='is'
                     primary-field='title'
                     multi-check-suppress-select-all='true'
                     onButtonClick={this.deleteTodo}
