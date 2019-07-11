@@ -1,9 +1,19 @@
-﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="ToDo._Default" %>
+﻿<%@ Page EnableEventValidation="false" Title="Home Page" Language="C#" MasterPageFile="~/Site.Master" Async="true" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="ToDo._Default" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <div class="nav">
+        <div class="icon">
+            <svg viewBox="0 0 128 100" style="height: 30px; width: 38.4px;">
+                <path fill="#E3173E"
+                      d="M125.78 50l-42.7-37.5a50 50 0 1 0 0 74.99l42.7-37.48m-110.6 0a34.83 34.83 0 1 1 69.65 0 34.83 34.83 0 0 1-69.65 0">
+                </path>
+            </svg>
+        </div>
+
+        <span class="label">Access todos</span>
+    </div>
     <section class="todoapp">
         <header class="header">
-            <h1>todos</h1>
             <form id="newTodo" class="todo-form" method="post">
                 <asp:TextBox ID="taskName" runat="server"
                              class="new-todo" ToolTip="What needs to be done?"
@@ -24,11 +34,11 @@
                                               Text="  "
                                               Checked='<%#Eval("IsCompleted") %>'
                                               OnCheckedChanged="IsCompleted_CheckedChanged"
-                                              itemId='<%#Eval("Title") %>'>
+                                              itemId='<%#Eval("Id") %>'>
                                 </asp:CheckBox>
                                 <label><%#Eval("Title") %></label>
                                 <%-- <button class="destroy" runat="server" OnClick="Remove_Item"></button> --%>
-                                 <asp:Button CssClass="destroy" runat="server"  OnClick="Remove_Item" itemId='<%#Eval("Title") %>' />
+                                <asp:Button CssClass="access-btn delete" runat="server" Text="Delete" OnClick="Remove_Item" itemId='<%#Eval("Id") %>'/>
                             </div>
                         </li>
                     </ItemTemplate>
@@ -39,7 +49,7 @@
                 <span class="todo-count">
                     <strong><%= todoStore.Count %></strong> items left
                 </span>
-                <asp:Button CssClass="clear-completed" runat="server" OnClick="Clear_Completed" Text="Clear Completed"></asp:Button>
+                <asp:Button CssClass="access-btn clear-complete" runat="server" OnClick="Clear_Completed" Text="Clear Completed"></asp:Button>
             </footer>
             <% } %>
         </section>

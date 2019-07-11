@@ -22,13 +22,12 @@ namespace ToDo
     {
         public static List<Todo> todoStore = new List<Todo>
         {
-//            new Todo {Title = "Walk the dog"},
-//            new Todo {Title = "Mail the document"}
+            new Todo {Title = "Walk the dog"},
+            new Todo {Title = "Mail the document"}
         };
 
         protected override void OnInit(EventArgs e)
         {
-//            Page.EnableEventValidation = false;
             todoList.DataSource = todoStore;
             todoList.DataBind();
         }
@@ -47,7 +46,7 @@ namespace ToDo
         {
             var checkbox = (CheckBox) sender;
             var itemId = checkbox.Attributes["itemID"];
-            var foundValue = todoStore.First(t => t.Title == itemId);
+            var foundValue = todoStore.First(t => t.Id == itemId);
             if (foundValue != null)
             {
                 foundValue.IsCompleted = checkbox.Checked;
@@ -60,7 +59,7 @@ namespace ToDo
         {
             var checkbox = (Button) sender;
             var itemId = checkbox.Attributes["itemID"];
-            var foundValue = todoStore.First(t => t.Title == itemId);
+            var foundValue = todoStore.First(t => t.Id == itemId);
             todoStore.Remove(foundValue);
             todoList.DataBind();
         }
