@@ -38,7 +38,7 @@
                                 </asp:CheckBox>
                                 <label><%#Eval("Title") %></label>
                                 <%-- <button class="destroy" runat="server" OnClick="Remove_Item"></button> --%>
-                                <asp:Button CssClass="access-btn delete" runat="server" Text="Delete" OnClick="Remove_Item" itemId='<%#Eval("Id") %>'/>
+                                <asp:Button CssClass="access-btn delete" runat="server" Text="Delete" OnClick="Remove_Item" itemId='<%#Eval("Id") %>'  UseSubmitBehavior="false"/>
                             </div>
                         </li>
                     </ItemTemplate>
@@ -49,7 +49,7 @@
                 <span class="todo-count">
                     <strong><%= todoStore.Count %></strong> items left
                 </span>
-                <asp:Button CssClass="access-btn clear-complete" runat="server" OnClick="Clear_Completed" Text="Clear Completed"></asp:Button>
+                <asp:Button CssClass="access-btn clear-complete" runat="server" OnClick="Clear_Completed" Text="Clear Completed"  UseSubmitBehavior="false" ></asp:Button>
             </footer>
             <% } %>
         </section>

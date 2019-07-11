@@ -20,11 +20,8 @@ namespace ToDo
 
     public partial class _Default : Page
     {
-        public static List<Todo> todoStore = new List<Todo>
-        {
-            new Todo {Title = "Walk the dog"},
-            new Todo {Title = "Mail the document"}
-        };
+        public static List<Todo> todoStore = new List<Todo>();
+       
 
         protected override void OnInit(EventArgs e)
         {
@@ -38,6 +35,7 @@ namespace ToDo
             {
                 todoStore.Add(new Todo {Title = taskName.Text});
                 taskName.Text = "";
+                todoList.DataSource = todoStore;
                 todoList.DataBind();
             }
         }
